@@ -1,0 +1,22 @@
+.sl-carousel-container {
+  position: relative;
+}
+
+.sl-carousel-container .viewport {
+  width: 100%;
+  height: 100%;
+}
+
+.sl-carousel-container .viewport .item-wrapper {
+  position: absolute;
+}
+
+.sl-carousel-container .viewport .control:hover {
+  cursor: pointer;
+}
+
+.sl-carousel-container .viewport .control.next {
+}
+
+.sl-carousel-container .viewport .control.previous {
+}
