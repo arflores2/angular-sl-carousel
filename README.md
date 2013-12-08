@@ -25,3 +25,16 @@ Carousel in AngularJS
 
     # in server/
     node server.js
+
+### Carousel Usage ######
+  
+    <div sl-carousel sl-carousel-items="app.items"></div>
+
+### Item Model ######
+    
+    {
+      title: 'Test',
+      imgSrc: 'test.png',
+      description: 'This is a test'
+    } 
+

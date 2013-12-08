@@ -15,8 +15,8 @@
   cursor: pointer;
 }
 
-.sl-carousel-container .viewport .next {
+.sl-carousel-container .viewport .control.next {
 }
 
-.sl-carousel-container .viewport .previous {
+.sl-carousel-container .viewport .control.previous {
 }

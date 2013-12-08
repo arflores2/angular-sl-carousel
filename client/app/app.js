@@ -3,7 +3,7 @@ angular.module('app', ['sl.carousel'])
   .controller('AppCtrl', function AppCtrl($scope, $sce) {
 
     $scope.app = {};
-    $scope.app.name = "Node Angular Skelton" 
+    $scope.app.name = "Angular Carousel" 
 
     $scope.app.items = [{
       title: 'Test',
