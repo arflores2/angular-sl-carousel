@@ -1,6 +1,6 @@
-# Node Angular Template #
+# Angular Carousel #
  
-Quickly setup a Node server with Angular front end.
+Carousel in AngularJS
 
 ### Application Stack ######
 
