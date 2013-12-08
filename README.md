@@ -28,8 +28,8 @@ Carousel in AngularJS
 
 ### Angular Dependencies ######
     
-    [ngSanitize](https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js)
-    https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js 
+[ngSanitize](https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js)
+https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js 
 
 ### Carousel Usage ######
   
