@@ -26,6 +26,11 @@ Carousel in AngularJS
     # in server/
     node server.js
 
+### Angular Dependencies ######
+    
+    [ngSanitize](https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js)
+    https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js 
+
 ### Carousel Usage ######
   
     <div sl-carousel sl-carousel-items="app.items"></div>
