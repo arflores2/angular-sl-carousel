@@ -10,7 +10,7 @@ Carousel in AngularJS
 
 - [Jade](http://jade-lang.com/)
 
-- [Angular 1.1.1](http://angularjs.org/)
+- [Angular 1.2.4](http://angularjs.org/)
 
 - [jQuery 1.10.2](jquery.com)
 
