@@ -13,16 +13,14 @@ angular.module('sl.carousel', ['ngSanitize'])
       template: 
         '<div class="sl-carousel-container clearfix">' +
 
-          '<div class="viewport">' +
+          '<div class="viewport clearfix">' +
 
-            '<div ng-repeat="item in slCarouselItems"> ' +
-              '<div' +  
-                ' sl-carousel-item' +
-                ' sl-carousel-item-img-src="item.imgSrc"' +
-                ' sl-carousel-item-title="item.title" ' +
-                ' sl-carousel-item-description="item.description">' +
-              '</div>' +
-            '</div>' + 
+            '<div class="clearfix" ng-repeat="item in slCarouselItems"' +  
+              ' sl-carousel-item' +
+              ' sl-carousel-item-img-src="item.imgSrc"' +
+              ' sl-carousel-item-title="item.title" ' +
+              ' sl-carousel-item-description="item.description">' +
+            '</div>' +
 
         '</div>',
 
