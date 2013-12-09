@@ -17,10 +17,12 @@
 }
 
 .sl-carousel-container {
-  position: relative;
-
   min-height: 200px;
   height: 200px;
+
+  position: relative;
+
+  overflow-x: hidden;
 }
 
 .sl-carousel-container .viewport {
