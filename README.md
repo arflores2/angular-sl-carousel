@@ -33,7 +33,7 @@ https://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-sanitize.min.js
 
 ### Carousel Usage ######
   
-    <div sl-carousel sl-carousel-items="app.items"></div>
+    <div sl-carousel sl-carousel-items="app.items" sl-carousel-item-offset="20"></div>
 
 ### Item Model ######
     

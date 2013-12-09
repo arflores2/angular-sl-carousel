@@ -7,8 +7,7 @@ angular.module('sl.carousel', ['ngSanitize'])
       controller: 'slCarouselCtrl',
       scope: {
         slCarouselItems: '=',
-        slCarouselPrevious: '&',
-        slCarouselNext: '&'
+        slCarouselItemOffset: '='
       },
 
       template: 
@@ -141,7 +140,7 @@ angular.module('sl.carousel', ['ngSanitize'])
           slideWidth = _width($el),
           centerSlideAxis = slideWidth/2,
           centerViewportAxis = self.viewportWidth/2,
-          newLeft = index*slideWidth + (centerViewportAxis - centerSlideAxis);
+          newLeft = index*slideWidth + (centerViewportAxis - centerSlideAxis) + index*$scope.slCarouselItemOffset;
 
       $scope.min = true;
 
@@ -170,7 +169,7 @@ angular.module('sl.carousel', ['ngSanitize'])
           slideWidth = slide._width,
           oldLeft = slide._left;
 
-      var newLeft = (direction === 'left') ? oldLeft - slideWidth : oldLeft + slideWidth;
+      var newLeft = (direction === 'left') ? oldLeft - slideWidth - $scope.slCarouselItemOffset : oldLeft + slideWidth + $scope.slCarouselItemOffset;
 
       $el.css({
         left: newLeft
