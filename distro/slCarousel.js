@@ -13,16 +13,14 @@ angular.module('sl.carousel', ['ngSanitize'])
       template: 
         '<div class="sl-carousel-container clearfix">' +
 
-          '<div class="viewport">' +
+          '<div class="viewport clearfix">' +
 
-            '<div ng-repeat="item in slCarouselItems"> ' +
-              '<div' +  
-                ' sl-carousel-item' +
-                ' sl-carousel-item-img-src="item.imgSrc"' +
-                ' sl-carousel-item-title="item.title" ' +
-                ' sl-carousel-item-description="item.description">' +
-              '</div>' +
-            '</div>' + 
+            '<div class="clearfix" ng-repeat="item in slCarouselItems"' +  
+              ' sl-carousel-item' +
+              ' sl-carousel-item-img-src="item.imgSrc"' +
+              ' sl-carousel-item-title="item.title" ' +
+              ' sl-carousel-item-description="item.description">' +
+            '</div>' +
 
         '</div>',
 
@@ -60,19 +58,30 @@ angular.module('sl.carousel', ['ngSanitize'])
 
       link: function($scope, $element, $attrs, slCarouselCtrl) {
 
+        $scope.active = function(isActive) {
+          var $el = this._$el;
+
+          if(isActive === true) {
+            $el.addClass('active');
+          }
+          else if(isActive === false) {
+            $el.removeClass('active');
+          }
+        };
+
         $scope.addNextListener = function(){
           var $el = this._$el;
           $el.on('click.slcarousel', function() {
             slCarouselCtrl.next();
           });
           $el.addClass('control next');
-        }
+        };
 
         $scope.removeNextListener = function() {
           var $el = this._$el;
           $el.off('click.slcarousel');
           $el.removeClass('control next');
-        }
+        };
 
         $scope.addPreviousListener = function() {
           var $el = this._$el;
@@ -80,18 +89,19 @@ angular.module('sl.carousel', ['ngSanitize'])
             slCarouselCtrl.previous();
           });
           $el.addClass('control previous');
-        }
+        };
 
         $scope.removePreviousListener = function() {
           var $el = this._$el;
           $el.off('click.slcarousel');
           $el.removeClass('control previous');
-        }
+        };
 
         $scope.reset = function() {
+          this.active(false);
           this.removeNextListener();
-          this.removePreviousListener();           
-        }
+          this.removePreviousListener();         
+        };
 
         slCarouselCtrl.addSlide($scope, $element); 
       }
@@ -102,7 +112,7 @@ angular.module('sl.carousel', ['ngSanitize'])
     var self = this,
         slides = self.slides || [],
         currentIndex = 0,
-
+        itemOffset = $scope.slCarouselItemOffset || 0,
         currentTimeout;
 
     self.currentSlide = null;
@@ -140,12 +150,18 @@ angular.module('sl.carousel', ['ngSanitize'])
           slideWidth = _width($el),
           centerSlideAxis = slideWidth/2,
           centerViewportAxis = self.viewportWidth/2,
-          newLeft = index*slideWidth + (centerViewportAxis - centerSlideAxis) + index*$scope.slCarouselItemOffset;
+          newLeft = index*slideWidth + (centerViewportAxis - centerSlideAxis) + index*itemOffset;
+
+      angular.extend(slide, { _index: index, _$el: $el, _left: newLeft, _width: slideWidth });
 
       $scope.min = true;
 
       if(slides.length == 0) {
         $scope.max = true;
+        slide.active(true);
+      }
+      else if(slides.length == 1) {
+        slide.addNextListener()
       }
       else {
         $scope.max = false;
@@ -155,11 +171,7 @@ angular.module('sl.carousel', ['ngSanitize'])
         left: newLeft
       });
 
-      angular.extend(slide, { _index: index, _$el: $el, _left: newLeft, _width: slideWidth });
-
-      if(slides.length == 1) {
-        slide.addNextListener()
-      }
+      
 
       slides.push(slide);
     };
@@ -169,7 +181,7 @@ angular.module('sl.carousel', ['ngSanitize'])
           slideWidth = slide._width,
           oldLeft = slide._left;
 
-      var newLeft = (direction === 'left') ? oldLeft - slideWidth - $scope.slCarouselItemOffset : oldLeft + slideWidth + $scope.slCarouselItemOffset;
+      var newLeft = (direction === 'left') ? oldLeft - slideWidth - itemOffset : oldLeft + slideWidth + itemOffset;
 
       $el.css({
         left: newLeft
@@ -204,6 +216,9 @@ angular.module('sl.carousel', ['ngSanitize'])
 
       angular.forEach(slides, function(slide, index) {
         slide.reset();
+        if(index === currentIndex) {
+          slide.active(true);
+        }
         _attachNextPreviousListeners(slide, index);
         self.move(slide, 'left');
       });
@@ -230,6 +245,9 @@ angular.module('sl.carousel', ['ngSanitize'])
 
       angular.forEach(slides, function(slide, index) {
         slide.reset();
+        if(index === currentIndex) {
+          slide.active(true);
+        }
         _attachNextPreviousListeners(slide, index); 
         self.move(slide, 'right');
       })
