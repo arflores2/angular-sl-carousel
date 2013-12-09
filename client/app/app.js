@@ -5,7 +5,7 @@ angular.module('app', ['sl.carousel'])
     $scope.app = {};
     $scope.app.name = "Angular Carousel" 
 
-    $scope.app.offset = 100;
+    $scope.app.offset = 10;
     $scope.app.items = [{
       title: 'Test',
       imgSrc: 'test.png',

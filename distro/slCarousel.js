@@ -25,7 +25,9 @@ angular.module('sl.carousel', ['ngSanitize'])
         '</div>',
 
       link: function($scope, $element, $attrs, slCarouselCtrl) {
-        slCarouselCtrl.setViewportWidth($element.find('.viewport').width());
+        slCarouselCtrl.viewport($element);
+        slCarouselCtrl.viewportWidth($element);
+        slCarouselCtrl.$element = $element;
       }
     }  
   })
@@ -58,6 +60,21 @@ angular.module('sl.carousel', ['ngSanitize'])
 
       link: function($scope, $element, $attrs, slCarouselCtrl) {
 
+        function _width($el) {
+          var width = parseInt($el.width(), 10),
+              paddingLeft = parseInt($el.css('padding-left'), 10),
+              paddingRight = parseInt($el.css('padding-right'), 10),
+              marginLeft = parseInt($el.css('margin-left'), 10),
+              marginRight = parseInt($el.css('margin-right'), 10),
+              borderLeft = parseInt($el.css('borderLeftWidth'), 10),
+              borderRight = parseInt($el.css('borderRightWidth'), 10);
+
+          width += paddingLeft + paddingRight;
+          width += marginLeft + marginRight;
+          width += borderLeft + borderRight;
+          return width;
+        }
+
         $scope.active = function(isActive) {
           var $el = this._$el;
 
@@ -68,6 +85,10 @@ angular.module('sl.carousel', ['ngSanitize'])
             $el.removeClass('active');
           }
         };
+
+        $scope.extend = function(obj) {
+          angular.extend(this, obj);
+        };        
 
         $scope.addNextListener = function(){
           var $el = this._$el;
@@ -103,34 +124,31 @@ angular.module('sl.carousel', ['ngSanitize'])
           this.removePreviousListener();         
         };
 
+        $scope.width = function() {
+          return _width(this._$el); 
+        }  
+
+        $scope.extend({
+          _$el: $element
+        });
+
         slCarouselCtrl.addSlide($scope, $element); 
       }
     } 
   })
 
-  .controller('slCarouselCtrl', function($scope, $timeout, $q) {
+  .controller('slCarouselCtrl', function($scope, $window) {
     var self = this,
         slides = self.slides || [],
         currentIndex = 0,
         itemOffset = $scope.slCarouselItemOffset || 0,
+        _$viewport,
+        _oldViewportWidth,
         currentTimeout;
 
     self.currentSlide = null;
 
-    function _width($el) {
-      var width = parseInt($el.width(), 10),
-          paddingLeft = parseInt($el.css('padding-left'), 10),
-          paddingRight = parseInt($el.css('padding-right'), 10),
-          marginLeft = parseInt($el.css('margin-left'), 10),
-          marginRight = parseInt($el.css('margin-right'), 10),
-          borderLeft = parseInt($el.css('borderLeftWidth'), 10),
-          borderRight = parseInt($el.css('borderRightWidth'), 10);
-
-      width += paddingLeft + paddingRight;
-      width += marginLeft + marginRight;
-      width += borderLeft + borderRight;
-      return width;
-    }
+    
 
     function _attachNextPreviousListeners(slide, index) {
 
@@ -145,14 +163,25 @@ angular.module('sl.carousel', ['ngSanitize'])
       }
     }
 
-    self.addSlide = function(slide, $el) {
-      var index = slides.length,
-          slideWidth = _width($el),
+    function _getLeft(slide) {
+      var index = (typeof slide._index === 'number') ? slide._index : slides.length,
+          slideWidth = slide.width(),
           centerSlideAxis = slideWidth/2,
-          centerViewportAxis = self.viewportWidth/2,
-          newLeft = index*slideWidth + (centerViewportAxis - centerSlideAxis) + index*itemOffset;
+          centerViewportAxis = self.viewportWidth()/2,
+          oldLeft = slide._left,
+          baseLeft = index*slideWidth + (centerViewportAxis - centerSlideAxis) + index*itemOffset,
+          newLeft = baseLeft;
 
-      angular.extend(slide, { _index: index, _$el: $el, _left: newLeft, _width: slideWidth });
+          return newLeft;
+    }
+
+    self.addSlide = function(slide, $el) {
+
+      var newLeft = _getLeft(slide);
+      slide.extend({
+        _left: newLeft,
+        _index: slides.length
+      });
 
       $scope.min = true;
 
@@ -171,28 +200,54 @@ angular.module('sl.carousel', ['ngSanitize'])
         left: newLeft
       });
 
-      
-
       slides.push(slide);
     };
 
     self.move = function(slide, direction) {
       var $el = slide._$el,
-          slideWidth = slide._width,
-          oldLeft = slide._left;
+          slideWidth = slide.width(),
+          oldLeft = slide._left,
+          _index = slide._index;
 
-      var newLeft = (direction === 'left') ? oldLeft - slideWidth - itemOffset : oldLeft + slideWidth + itemOffset;
+      var newLeft;
+      if(direction === 'left') {
+        newLeft = oldLeft - slideWidth - itemOffset;
+        _index -= 1;
+      }
+      else {
+        newLeft = oldLeft + slideWidth + itemOffset;
+        _index += 1;
+      }
 
       $el.css({
         left: newLeft
       });
 
-      angular.extend(slide, { _left: newLeft });
+      angular.extend(slide, { 
+        _left: newLeft, 
+        _index: _index
+      });
     };
 
-    self.setViewportWidth = function(width) {
+    self.viewport = function($carouselElement) {
+
+      if($carouselElement) {
+        _$viewport = $carouselElement.find('.viewport');
+      }
+
+      return _$viewport;
+    }
+
+    self.viewportWidth = function() {
+      var $viewport = self.viewport(),
+          width;
+      if(!$viewport || $viewport.length === 0) {
+        return 0;
+      }
+
+      width = $viewport.width();
       if(typeof width === 'number') {
-        self.viewportWidth = width;
+        return width;
       }
     };
 
@@ -252,4 +307,21 @@ angular.module('sl.carousel', ['ngSanitize'])
         self.move(slide, 'right');
       })
     }
+
+    angular.element($window).bind('resize', function() {
+
+      angular.forEach(slides, function(slide, index) {
+        var newLeft = _getLeft(slide),
+            $el = slide._$el;
+
+        slide.extend({
+          _left: newLeft
+        });
+
+        $el.css({
+          left: newLeft
+        });
+      });
+    });
+
   });

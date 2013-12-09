@@ -1,3 +1,7 @@
+body {
+  overflow: hidden;
+}
+
 .clearfix:before,
 .clearfix:after {
   content: '\0020';
@@ -21,8 +25,15 @@
   height: 200px;
 
   position: relative;
+  overflow: inherit;
+}
 
-  overflow-x: hidden;
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+  .sl-carsousel-container {
+    /*width: 80%;*/
+  }
+
 }
 
 .sl-carousel-container .viewport {
